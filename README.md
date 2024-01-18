@@ -145,6 +145,43 @@ Some of the Results:
 3) Scatter Plot: Cell Count vs. Wing Disc
    ![image](https://github.com/saisamhithavajja/QMEE/assets/96578069/fdaefc1c-4485-486d-8195-a887ccf19936)
 
+Use the saveRDS function in R to save a clean (or clean-ish) version of your data and Write a separate script that reads in your .rds file and does something with it: either a calculation or a plot.
+
+```ruby
+#save the data in an RDS file
+saveRDS(data, file = "Assignment1code.rds")
+
+# Load necessary libraries
+library(ggplot2)
+
+# Read the .rds file
+data <- readRDS("Assignment1code.rds")
+
+# Display the structure of the loaded data
+str(data)
+
+# Create a scatter plot
+ggplot(data, aes(x = Count , y = Species)) +
+  geom_point() +
+  labs(title = "Scatter Plot of X vs. Y",
+       x = "Cell Count",
+       y = "Different Species of Drosophila")
+```
+Result: ![image](https://github.com/saisamhithavajja/QMEE/assets/96578069/c08d817d-2e76-444d-9ca1-bd820e874503)
+
+Further investigations that I plan to make in this study:
+
+Given that we have cell count data for the wings of different species of Drosophila, and the data is split into males and females, we can perform more advanced investigations and statistical analyses to gain deeper insights. Here are some suggestions:
+
+1. Multivariate Analysis of Variance (MANOVA):
+Use MANOVA to analyze the differences in cell counts across different species while considering both males and females. This allows you to test whether significant differences exist in the combination of dependent variables (cell counts) among groups (species and gender).
+
+2. Principal Component Analysis (PCA):
+Conduct PCA to reduce the dimensionality of the data and visualize patterns of variation. This can help us understand whether there are distinct patterns or clusters based on cell count data.
+
+3. Cluster Analysis:
+Use cluster analysis to identify groups of species or individuals with similar cell count patterns. This can help reveal natural groupings in the data.
+
 
 
 
