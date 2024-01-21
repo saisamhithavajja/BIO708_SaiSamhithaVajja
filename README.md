@@ -1,7 +1,7 @@
-This study explores the intricate interplay of sexual selection, allometry, and intralocus sexual conflict in shaping the evolution of sexual dimorphism in Drosophila wing shape and size. Contradictory findings regarding the stability of sexual shape dimorphism in Drosophila prompt a closer examination of allometry's contribution to the evolution of wing shape dimorphism. The study delves into the complex relationship between intersexual genetic correlation, intralocus sexual conflict, and the constraints they impose on the evolution of sexual dimorphism. The evidence suggests that shared genetic architecture between males and females limits the evolutionary response of wing shape dimorphism, highlighting the role of intralocus sexual conflict. Furthermore, the study explores the potential resolution of such conflicts by evolving condition-dependent traits.
+This study explores the intricate interplay of sexual selection, allometry, and intralocus sexual conflict in shaping the evolution of sexual dimorphism in *Drosophila* wing shape and size. Contradictory findings regarding the stability of sexual shape dimorphism in *Drosophila* prompt a closer examination of allometry's contribution to the evolution of wing shape dimorphism. The study delves into the complex relationship between intersexual genetic correlation, intralocus sexual conflict, and the constraints they impose on the evolution of sexual dimorphism. The evidence suggests that shared genetic architecture between males and females limits the evolutionary response of wing shape dimorphism, highlighting the role of intralocus sexual conflict. Furthermore, the study explores the potential resolution of such conflicts by evolving condition-dependent traits.
 The concept of condition dependence is investigated in the context of Drosophila wing size and shape, revealing a link between nutrition, mating success, and the observed sexual dimorphism. The study extends its focus to interspecific patterns, exploring how the degree of sexual shape and size dimorphism correlates with condition dependence across a phylogeny of flies. The findings suggest that species with more pronounced sexual dimorphism exhibit stronger condition dependence for sexually selected traits.
 
-The objective of this study will be to look at the cell counts in the wings of different Drsophila species and how sexually dimorphic the cell counts are in the species of Drosophila. The biological questions we would like to answer are as follows;
+The objective of this study will be to look at the cell counts in the wings of different *Drosophila* species and how sexually dimorphic the cell counts are in the species of Drosophila. The biological questions we would like to answer are as follows;
 
 1) Condition dependence difference in the cell counts in the wings of different Drosophila species. 
 2) Within the same species, how dimorphic is the condition dependent cell count in the wings.
@@ -10,26 +10,30 @@ The objective of this study will be to look at the cell counts in the wings of d
 Following below, I have written some initial analysis as well as explaination of what the code is doing. 
 
 1) Load Packages:
-   ```ruby
-   library(tidyverse)
-   library(ggplot2)
-   ```
+
+```r
+library(tidyverse)
+library(ggplot2) ## don't need to load this separately, comes with tidyverse
+```
+
 The code loads the tidyverse package, which includes a collection of packages for data manipulation (dplyr), data visualization (ggplot2), and other useful tools.
 
 2) Load Data:
-```ruby
+```
 data <- read.csv("data/MP_SpeciesStarvation_Cell_count_data.csv")
 ```
 Reads a CSV file ("MP_SpeciesStarvation_Cell_count_data.csv") into a dataframe named data.
 
 3) Explore Data Structure:
-```ruby
+
+```{r}
 str(data)
 ```
 Prints the structure of the data, showing the types and first few values of each column.
 
 4) Check for Missing Values:
-``ruby
+
+```{r}
 missing_values <- data %>%
   summarise_all(~ sum(is.na(.)))
 ```
@@ -43,14 +47,14 @@ data <- data %>%
 Removes rows with missing values from the dataframe.
 
 6) Extract Sex Information:
-```ruby
+```{r}
 data <- data %>%
   mutate(Sex = ifelse(str_detect(Label, "_F_"), "Female", "Male"))
 ```
 Creates a new column Gender based on whether the "Label" column contains "F" (Female) or not.
 
 7) Show Unique Entries in Columns:
-```ruby
+```{r}
 unique_entries <- data %>%
   distinct(Label, Wing_Area)
 print(unique_entries)
@@ -58,7 +62,7 @@ print(unique_entries)
 Prints unique entries in the "Label" and "Wing_Area" columns.
 
 8) Create a New Column "Species":
-```ruby
+```{r}
 data <- data %>%
   mutate(Species = case_when(
     ... # species mapping rules
@@ -67,7 +71,7 @@ data <- data %>%
 Creates a new column "Species" based on patterns in the "Label" column using the case_when function.
 
 9) Print Updated Data:
-```ruby
+```{r}
 print(data)
 ```
 Prints the updated dataframe with the new "Species" column.
@@ -79,7 +83,7 @@ Prints the updated dataframe with the new "Species" column.
 Filters the data, creates boxplots, violin plots, and performs a t-test for a comparative analysis.
 
 10) Basic Summary Statistics:
-``ruby
+``r
 summary_stats <- data %>%
   group_by(Species, Gender) %>%
   summarise(
@@ -93,7 +97,7 @@ summary_stats <- data %>%
 Computes basic summary statistics by grouping data based on "Species" and "Gender."
 
 11) Visualize Mean Cell Count:
-```ruby
+```r
 ggplot(summary_stats, aes(x = Species, y = mean_cell_count, fill = Gender)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Mean Cell Count by Species and Gender",
@@ -103,7 +107,7 @@ ggplot(summary_stats, aes(x = Species, y = mean_cell_count, fill = Gender)) +
 Creates a bar plot to visualize the mean cell count by species and gender.
 
 12) Boxplot for Cell Counts by Species and Gender:
-```ruby
+```r
 ggplot(data, aes(x = Species, y = Count, fill = Gender)) +
   geom_boxplot() +
   labs(title = "Cell Counts by Species and Gender",
@@ -113,7 +117,8 @@ ggplot(data, aes(x = Species, y = Count, fill = Gender)) +
 Creates a boxplot to compare cell counts by species and gender.
 
 13) Scatter Plot: Cell Count vs. Wing Disc:
-```ruby
+
+```{r}
 ggplot(data, aes(x = Wing_Area, y = Count, color = Species)) +
   geom_point() +
   labs(title = "Cell Count vs. Wing Disc",
@@ -124,7 +129,7 @@ ggplot(data, aes(x = Wing_Area, y = Count, color = Species)) +
 Creates a scatter plot to visualize the relationship between cell count and wing disc size.
 
 14) Correlation between Cell Count and Wing Disc:
-```ruby
+```r
 correlation_result <- data %>%
   group_by(Wing_Area) %>%
   summarise(correlation = cor(Count))
@@ -147,7 +152,7 @@ Some of the Results:
 
 Use the saveRDS function in R to save a clean (or clean-ish) version of your data and Write a separate script that reads in your .rds file and does something with it: either a calculation or a plot.
 
-```ruby
+```{r}
 #save the data in an RDS file
 saveRDS(data, file = "Assignment1code.rds")
 
@@ -181,7 +186,4 @@ Conduct PCA to reduce the dimensionality of the data and visualize patterns of v
 
 3. Cluster Analysis:
 Use cluster analysis to identify groups of species or individuals with similar cell count patterns. This can help reveal natural groupings in the data.
-
-
-
 
