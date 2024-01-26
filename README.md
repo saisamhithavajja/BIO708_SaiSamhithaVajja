@@ -187,3 +187,82 @@ Conduct PCA to reduce the dimensionality of the data and visualize patterns of v
 3. Cluster Analysis:
 Use cluster analysis to identify groups of species or individuals with similar cell count patterns. This can help reveal natural groupings in the data.
 
+ASSIGNMENT 2 (26TH JANUARY 2023)
+I have provided the code for the assignment 2 and I am also attaching the results for the assignments:
+
+```ruby
+##Assignment 2
+
+##some more ggplots to visualize the data
+#1) First one
+##load all the required packages
+library(dplyr)
+library(ggplot2)
+
+mean_cell_count_by_species <- data %>%
+  group_by(Species) %>%
+  summarise(mean_cell_count = mean(Count))
+
+# Print the result
+print(mean_cell_count_by_species)
+
+# Calculate mean and standard deviation by species
+summary_stats <- data %>%
+  group_by(Species) %>%
+  summarise(mean_cell_count = mean(Count),
+            sd_cell_count = sd(Count))
+
+# Plot the mean and standard deviation
+ggplot(summary_stats, aes(x = Species, y = mean_cell_count)) +
+  geom_bar(stat = "identity", fill = "skyblue", color = "black") +
+  geom_errorbar(aes(ymin = mean_cell_count - sd_cell_count,
+                    ymax = mean_cell_count + sd_cell_count),
+                width = 0.2, position = position_dodge(0.9), color = "black") +
+  labs(title = "Mean and Standard Deviation of Cell Count by Drosophila Species",
+       x = "Species",
+       y = "Cell Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```ruby
+##2) Second one
+
+library(dplyr)
+
+# Function to calculate z-scores for a vector
+calculate_z_scores <- function(x) {
+  mean_x <- mean(x)
+  sd_x <- sd(x)
+  z_scores <- (x - mean_x) / sd_x
+  return(z_scores)
+}
+
+# Calculate z-scores for cell counts within each species
+data_filtered <- data %>%
+  group_by(Species) %>%
+  filter(between(Count, quantile(Count, 0.05), quantile(Count, 0.95))) %>%
+  mutate(z_score = calculate_z_scores(Count))
+
+# Plot the updated boxplot without outliers
+if (nrow(data_filtered) > 0) {
+  library(ggplot2)
+  
+  ggplot(data_filtered, aes(x = Species, y = Count, fill = Gender)) +
+    geom_boxplot() +
+    labs(title = "Cell Counts by Drosophila Species and Gender (Outliers Removed)",
+         x = "Species",
+         y = "Cell Count",
+         fill = "Gender") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+} else {
+  print("No data points remaining after outlier removal.")
+}
+
+```
+RESULTS
+
+1) ![image](https://github.com/saisamhithavajja/QMEE/assets/96578069/4cbf052a-9d00-4d5c-a64d-04e533835809)
+2) ![image](https://github.com/saisamhithavajja/QMEE/assets/96578069/50fc0619-92d4-4f1b-afb9-9fbad211b00b)
+
